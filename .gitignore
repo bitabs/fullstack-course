@@ -77,6 +77,7 @@ dist
 
 # IDE
 .idea
+.idea/**/*
 
 # Service worker
 sw.*
