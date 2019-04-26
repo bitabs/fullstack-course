@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from 'react-redux'
 import { fetchPosts } from "../../actions/postActions";
 import "./App.css";
+import Home from 'src/components/pages/Home'
 
 class App extends Component {
 
@@ -11,9 +12,7 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
-        <h1>Hello world</h1>
-      </div>
+      <Home posts={this.props.posts} />
     );
   }
 }
