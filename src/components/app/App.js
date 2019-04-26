@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from 'react-redux'
 import { fetchPosts } from "../../actions/postActions";
 import "./App.css";
-import Home from 'src/components/pages/Home'
+import Home from 'src/components/pages/Home/Home'
 
 class App extends Component {
 
