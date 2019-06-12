@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "rm -rf build/ && webpack-dev-server --env.mode development --hot",
-    "heroku-prebuild": "yarn install --dev",
-    "heroku-postbuild": "rm -rf build/ && webpack --env.mode production"
+    "build": "rm -rf build/ && webpack --env.mode production"
   },
   "engines": {
     "node": "10.x",
