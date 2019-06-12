@@ -5,11 +5,11 @@
   "main": "index.js",
   "scripts": {
     "heroku-prebuild": "yarn install --dev",
-    "dev": "rm -rf build/ && webpack-dev-server --env.mode development --hot",
-    "start": "rm -rf build/ && webpack --env.mode production"
+    "start": "rm -rf build/ && webpack-dev-server --env.mode development --hot",
+    "build": "rm -rf build/ && webpack --env.mode production"
   },
   "engines": {
-    "node": "10.15.3"
+    "yarn": "1.x"
   },
   "repository": {
     "type": "git",
