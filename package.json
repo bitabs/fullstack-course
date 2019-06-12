@@ -8,7 +8,9 @@
     "dev": "rm -rf build/ && webpack-dev-server --env.mode development --hot",
     "start": "rm -rf build/ && webpack --env.mode production"
   },
-
+  "engines": {
+    "node": "10.15.3"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/NaseebullahSafi/fullstack-course.git"
