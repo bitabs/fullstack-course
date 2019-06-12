@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "heroku-prebuild": "yarn install --dev",
     "start": "rm -rf build/ && webpack-dev-server --env.mode development --hot",
+    "heroku-postbuild": "yarn install --dev",
     "build": "rm -rf build/ && webpack --env.mode production"
   },
   "engines": {
