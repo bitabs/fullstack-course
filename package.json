@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "heroku-prebuild": "yarn install --dev",
     "dev": "rm -rf build/ && webpack-dev-server --env.mode development --hot",
     "start": "rm -rf build/ && webpack --env.mode production"
   },
