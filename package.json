@@ -6,7 +6,7 @@
   "scripts": {
     "start": "rm -rf build/ && webpack-dev-server --env.mode development --hot",
     "heroku-prebuild": "yarn install --dev",
-    "build": "rm -rf build/ && webpack --env.mode production"
+    "heroku-postbuild": "rm -rf build/ && webpack --env.mode production"
   },
   "engines": {
     "yarn": "1.x"
