@@ -8,7 +8,7 @@ const
 module.exports = () => ({
   devtool: 'none',
   output: {
-    path: path.resolve(__dirname, 'build/'),
+    path: path.resolve(__dirname, './build/'),
     publicPath: '/',
     filename: 'static/js/[name].[contenthash].js'
   },
