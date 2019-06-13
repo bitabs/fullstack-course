@@ -1,3 +1,9 @@
+/**
+ *     "start": "rm -rf build/ && webpack-dev-server --env.mode development --hot",
+ "build": "rm -rf build/ && webpack --env.mode production"
+ * @type {module:path}
+ */
+
 const
   path = require("path"),
   webpack = require("webpack"),
