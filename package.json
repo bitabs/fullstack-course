@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node build/index.html",
     "build": "rm -rf build/ && webpack --env.mode production"
   },
   "engines": {
