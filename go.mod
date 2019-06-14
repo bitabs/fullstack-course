@@ -1,4 +1,4 @@
-module github.com/NaseebullahSafi/fullstack-course
+module fullstack-course
 
 go 1.12
 
