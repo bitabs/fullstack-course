@@ -4,10 +4,10 @@
   "description": "",
   "main": "main.go",
   "scripts": {
-    "react": "rm -rf build/ && webpack --env.mode production",
+    "client": "rm -rf build/ && webpack --env.mode production",
     "go": "cd server/ && rm -rf main && go build -o main",
     "start": "cd server && ./main",
-    "heroku-prebuild": "yarn run react && yarn run go"
+    "heroku-prebuild": "yarn run client"
   },
   "engines": {
     "node": "10.x",
