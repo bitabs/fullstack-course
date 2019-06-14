@@ -5,9 +5,9 @@
   "main": "main.go",
   "scripts": {
     "client": "rm -rf build/ && webpack --env.mode production",
-    "go": "cd server/ && rm -rf main && go build -o main",
+    "server": "cd server/ && rm -rf main && go build -o main",
     "start": "cd server && ./main",
-    "heroku-prebuild": "yarn install && yarn run client"
+    "heroku-prebuild": "yarn install && yarn run client && yarn run server"
   },
   "engines": {
     "node": "10.x",
