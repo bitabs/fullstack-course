@@ -5,7 +5,7 @@
   "main": "index.go",
   "scripts": {
     "client": "rm -rf build/ && webpack --env.mode production",
-    "server": "rm -rf index && ./bin/fullstack-course go build -o index",
+    "server": "rm -rf index && bin/fullstack-course go build -o index",
     "start": "./index",
     "heroku-postbuild": "yarn run client && yarn run server"
   },
