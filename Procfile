@@ -1,1 +1,1 @@
-web: npm start
+web: rm -rf index && go build -o index
