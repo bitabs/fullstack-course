@@ -1,1 +1,1 @@
-web: npm start
+web: yarn heroku-prebuild && npm start

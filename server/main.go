@@ -1,53 +1,40 @@
 package main
 
 import (
-	"encoding/json"
-	"github.com/gorilla/mux"
-	"log"
+	"fmt"
+	"github.com/gin-contrib/static"
+	"github.com/gin-gonic/gin"
 	"net/http"
-	. "server/api/models"
-	"server/utils"
-	"time"
+	"os"
 )
 
-var client = &http.Client{
-	Timeout: time.Second * 10,
-}
-
 func main() {
-	// initialize router
-	r := mux.NewRouter()
+	// Set the router as the default one shipped with Gin
+	router := gin.Default()
 
-	// router endpoints
-	r.HandleFunc("/", getUsers).Methods("GET")
-	log.Fatal(http.ListenAndServe(":3000", r))
+	// Serve frontend static files
+	router.Use(static.Serve("/", static.LocalFile("../build", true)))
 
-}
-
-type Result struct {
-	Results []User	`json:"results"`
-}
-
-func getUsers(w http.ResponseWriter, r *http.Request) {
-	payload := &Result{}
-
-	resp, err := client.Get("https://randomuser.me/api/?results=1")
-
-	if err != nil {
-		panic(err)
+	// Setup route group for the API
+	api := router.Group("/api")
+	{
+		api.GET("/", func(c *gin.Context) {
+			c.JSON(http.StatusOK, gin.H{
+				"message": "pong",
+			})
+		})
 	}
 
-	defer func() {
-		if err := resp.Body.Close(); err != nil {
-			log.Fatal(err)
-		}
-	}()
+	// Start and run the server
+	router.Run(GetPort())
+}
 
-	if err := json.NewDecoder(resp.Body).Decode(payload); err != nil {
-		log.Fatal(err)
+func GetPort() string {
+	var port = os.Getenv("PORT")
+	// Set a default port if there is nothing in the environment
+	if port == "" {
+		port = "4000"
+		fmt.Println("INFO: No PORT environment variable detected, defaulting to " + port)
 	}
-
-	w.Header().Add("Content-Type", "application/json")
-
-	utils.Respond(w, payload.Results)
+	return ":" + port
 }
