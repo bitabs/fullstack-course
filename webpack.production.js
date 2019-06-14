@@ -1,3 +1,10 @@
+/**
+ *     "client": "rm -rf build/ && webpack --env.mode production",
+ "server": "rm -rf index && go build -o index",
+ "start": "./index",
+ "heroku-postbuild": "yarn run client && yarn run server"
+ * @type {module:path}
+ */
 const
   path                    = require('path'),
   MiniCssExtractPlugin    = require('mini-css-extract-plugin'),
