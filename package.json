@@ -6,8 +6,8 @@
   "scripts": {
     "client": "rm -rf build/ && webpack --env.mode production",
     "server": "rm -rf index && ./bin/fullstack-course go build -o index",
-    "start": "./build",
-    "heroku-postbuild": "yarn run client && yarn run server && ./index"
+    "start": "./index",
+    "heroku-postbuild": "yarn run client && yarn run server"
   },
   "engines": {
     "node": "10.x",
