@@ -5,8 +5,8 @@
   "main": "index.go",
   "scripts": {
     "client": "rm -rf build/ && webpack --env.mode production",
-    "server": "rm -rf main && go build -o main",
-    "start": "./main",
+    "server": "rm -rf index && go build -o index",
+    "start": "./index",
     "heroku-prebuild": "yarn install && yarn run client && yarn run server"
   },
   "engines": {
