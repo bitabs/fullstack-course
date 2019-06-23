@@ -6,7 +6,7 @@
   "scripts": {
     "client": "rm -rf build/ && webpack --env.mode production",
     "server": "rm -rf index && go build -o index",
-    "start": "./index",
+    "start": "cd build",
     "heroku-postbuild": "yarn run client"
   },
   "engines": {
