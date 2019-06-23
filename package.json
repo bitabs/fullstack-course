@@ -2,12 +2,9 @@
   "name": "fullstack-course",
   "version": "1.0.0",
   "description": "",
-  "main": "index.go",
+  "main": "",
   "scripts": {
-    "client": "rm -rf build/ && webpack --env.mode production",
-    "server": "rm -rf index && go build -o index",
-    "start": "cd build",
-    "heroku-postbuild": "yarn run client"
+    "start": "rm -rf build/ && webpack --env.mode production"
   },
   "engines": {
     "node": "10.x",
