@@ -4,7 +4,7 @@
   "description": "",
   "main": "",
   "scripts": {
-    "start": "rm -rf build/ && webpack --env.mode production"
+    "start": "rm -rf build/ && webpack --env.mode production && cd build && index.html"
   },
   "engines": {
     "node": "10.x",
