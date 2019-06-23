@@ -2,6 +2,12 @@
  *     "client": "rm -rf build/ && webpack --env.mode production",
  "server": "rm -rf index && go build -o index",
  "start": "./index",
+
+
+ "start": "rm -rf build/ && webpack-dev-server --env.mode development --hot",
+ "build": "rm -rf build/ && webpack --env.mode production"
+
+
  "heroku-postbuild": "yarn run client && yarn run server"
  * @type {module:path}
  */
