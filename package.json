@@ -4,7 +4,8 @@
   "description": "",
   "main": "",
   "scripts": {
-    "start": "rm -rf build/ && webpack --env.mode production"
+    "start": "go build -o index && ./index",
+    "build": "rm -rf build/ && webpack --env.mode production"
   },
   "engines": {
     "node": "10.x",
