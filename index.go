@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	http.Handle("/", http.FileServer(http.Dir("/build")))
+	http.Handle("/", http.FileServer(http.Dir("./build")))
 	//http.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	//	fmt.Println("Hello World")
 	//	http.FileServer(http.Dir("/build"))
