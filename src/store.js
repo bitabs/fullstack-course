@@ -21,7 +21,6 @@ if (process.env.NODE_ENV === 'development') {
     enhancers.push(__REDUX_DEVTOOLS_EXTENSION__())
 }
 
-
 /**
  * functional programming utility, and is included in Redux as a convenience.
  * You might want to use it to apply several store enhancers in a row.
