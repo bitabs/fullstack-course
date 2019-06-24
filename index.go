@@ -9,16 +9,11 @@ import (
 
 func main() {
 	http.Handle("/", http.FileServer(http.Dir("./build")))
-	//http.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	//	fmt.Println("Hello World")
-	//	http.FileServer(http.Dir("/build"))
-	//}))
 	Port := GetPort()
 	log.Println("Now server is running on port" + Port)
 	if err := http.ListenAndServe(Port, nil); err != nil {
 		log.Fatal(err)
 	}
-	//http.Handle("/", http.FileServer(http.Dir("./build")))
 }
 
 func GetPort() string {
