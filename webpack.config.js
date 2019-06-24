@@ -1,9 +1,3 @@
-/**
- *     "start": "rm -rf build/ && webpack-dev-server --env.mode development --hot",
- "build": "rm -rf build/ && webpack --env.mode production"
- * @type {module:path}
- */
-
 const
   path = require("path"),
   webpack = require("webpack"),
@@ -47,7 +41,7 @@ module.exports = ({ mode } = { mode: "production" }) => {
     resolve: {
       extensions: ["*", ".js", ".jsx"],
       alias: {
-        src: path.resolve(__dirname, "src/")
+        components: path.resolve(__dirname, "./src/components")
       }
     },
     devServer: {
