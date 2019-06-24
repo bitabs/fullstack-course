@@ -9,7 +9,7 @@ import (
 
 func main() {
 	http.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Println("Hello Mars!")
+		http.FileServer(http.Dir("/build"))
 	}))
 	Port := GetPort()
 	log.Println("Now server is running on port" + Port)
