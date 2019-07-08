@@ -9,5 +9,17 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 -->
 ## Overview
+This is a project designed to help developers of all levels have a better understanding on how to build a complex web application with a unique set of languages and tools from scratch, without relying on toolchains.
 
+What will you learn in the process:
 
+- Go
+- GORM (Go ORM[Object Relational Mapping])
+- PostgreSQL
+- GraphQL
+- React
+- Webpack
+
+> Still under initial development. Coming out soon.
+
+##### If you have a particular web application in mind that I'd like to build, please raise it an issue.
