@@ -5,7 +5,6 @@ import (
 	"fullstack-course/conf"
 	"github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
-	"log"
 	"os"
 )
 
@@ -13,14 +12,14 @@ type DB struct {
 	*gorm.DB
 }
 
-func Connect(isProd bool) (*DB, error) {
-	_, err := conf.GetConfig(isProd)
+func Connect() (*DB, error) {
+	dbUri := os.Getenv("DATABASE_URL")
 
-	if err != nil {
-		log.Fatal("Error::", err)
+	if dbUri == "" {
+		dbUri = "host=localhost port=5432 user=naseebullahahmadi dbname=fullstack sslmode=disable"
 	}
 
-	db, err := gorm.Open("postgres", os.Getenv("DATABASE_URL"))
+	db, err := gorm.Open("postgres", dbUri)
 
 	if err != nil {
 		return nil, err

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	. "fullstack-course/db"
 	"fullstack-course/gql"
 	"fullstack-course/models"
@@ -20,16 +19,16 @@ type Router struct {
 
 func main() {
 
-	boolPtr := flag.Bool("prod", false, "for production")
-
-	flag.Parse()
-
-	gin.SetMode(gin.ReleaseMode)
+	//boolPtr := flag.Bool("prod", false, "for production")
+	//
+	//flag.Parse()
+	//
+	//gin.SetMode(gin.ReleaseMode)
 
 	router := Router{gin.Default()}
 
 	// initialise database connection based on the configs
-	db := initDBConnection(*boolPtr)
+	db := initDBConnection()
 
 	// once we're finished with db. Request the db to close
 	defer func() {
@@ -76,9 +75,9 @@ func main() {
 }
 
 // Initialises Database (PostgreSQL) connection.
-func initDBConnection(isProd bool) *DB {
+func initDBConnection() *DB {
 	// will begin the connection process
-	db, err := Connect(isProd)
+	db, err := Connect()
 
 	// in the event of any failure during the connection,
 	if err != nil {
