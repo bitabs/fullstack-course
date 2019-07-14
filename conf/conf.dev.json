@@ -1,0 +1,9 @@
+{
+  "Database": {
+    "Host": "localhost",
+    "Port": "5432",
+    "User": "naseebullahahmadi",
+    "Name": "fullstack",
+    "Pass": ""
+  }
+}

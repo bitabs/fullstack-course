@@ -83,6 +83,6 @@ dist
 sw.*
 
 # Go configurations
-conf
+conf/conf.prod.json
 build
 
