@@ -6,6 +6,7 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
 	"log"
+	"os"
 )
 
 type DB struct {
@@ -13,13 +14,13 @@ type DB struct {
 }
 
 func Connect(isProd bool) (*DB, error) {
-	config, err := conf.GetConfig(isProd)
+	_, err := conf.GetConfig(isProd)
 
 	if err != nil {
 		log.Fatal("Error::", err)
 	}
 
-	db, err := gorm.Open("postgres", conStr(isProd, config))
+	db, err := gorm.Open("postgres", os.Getenv("DATABASE_URL"))
 
 	if err != nil {
 		return nil, err
