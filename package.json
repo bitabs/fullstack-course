@@ -5,7 +5,7 @@
   "main": "",
   "scripts": {
     "dev": "rm -rf build/ && webpack-dev-server --env.mode development --hot",
-    "start": "go build -o index && ./index -prod",
+    "start": "go build -o index && ./index",
     "build": "rm -rf build/ && webpack --env.mode production"
   },
   "engines": {
