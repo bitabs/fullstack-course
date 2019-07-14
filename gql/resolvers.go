@@ -7,16 +7,7 @@ import (
 )
 
 type Resolver struct {
-	db *db.DB
-}
-
-func (r *Resolver) UserResolver(p graphql.ResolveParams) (interface{}, error) {
-	//name, ok := p.Args["name"].(string)
-	//if ok {
-		//users := r.db.GetUsersByName(name)
-		//return users, nil
-	//}
-	return nil, nil
+	db                *db.DB
 }
 
 func (r *Resolver) TutorialResolver(p graphql.ResolveParams) (interface{}, error) {
@@ -33,7 +24,12 @@ func (r *Resolver) TutorialResolver(p graphql.ResolveParams) (interface{}, error
 
 func (r *Resolver) TutorialsResolver(p graphql.ResolveParams) (interface{}, error) {
 	var tuts []models.Tutorial
-	r.db.AutoMigrate(&tuts)
-	r.db.First(&tuts)
+
+	r.db.Find(&tuts)
+
+	for i := range tuts {
+		r.db.Model(&tuts[i]).Related(&tuts[i].Comments)
+	}
+
 	return tuts, nil
 }

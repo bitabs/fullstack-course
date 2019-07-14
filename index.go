@@ -18,15 +18,6 @@ type Router struct {
 }
 
 func main() {
-
-	//boolPtr := flag.Bool("prod", false, "for production")
-	//
-	//flag.Parse()
-	//
-	//gin.SetMode(gin.ReleaseMode)
-
-	router := Router{gin.Default()}
-
 	// initialise database connection based on the configs
 	db := initDBConnection()
 
@@ -37,10 +28,39 @@ func main() {
 		}
 	}()
 
-	// Two tables, tutorial & comment
+	// we'll use gin for routing
+	router := Router{gin.Default()}
+
+	// initialise Database model, i.e. tables
+	initDbModel(db)
+
+	// initialise graphql api
+	initGraphQLApi(db, &router)
+
+	// serve static frontend pages
+	router.Use(static.Serve("/", static.LocalFile("./build", true)))
+
+	// get a port
+	Port := GetPort()
+
+	// log which port we're connected to
+	log.Println("Now server is running on port" + Port)
+
+	// initiate the app on available port
+	if err := router.Run(Port); err != nil {
+		log.Fatal(err)
+	}
+}
+
+/**
+  * func to initialise database model, i.e. create tables
+  * within the database.
+  */
+func initDbModel(db *DB) {
+	// Two (structs) tables, tutorial & comment
 	tut, cmt := models.Tutorial{}, models.Comment{}
 
-	// dev purposes, drop the table if it exists
+	// dev related, drop the table if it exists
 	db.DropTableIfExists(&tut, &cmt)
 
 	// Create the table
@@ -58,28 +78,16 @@ func main() {
 
 	// Insert the data to psql
 	db.Create(&data)
-
-	initGraphQLApi(db, &router)
-
-	router.Use(static.Serve("/", static.LocalFile("./build", true)))
-
-	// get a port
-	Port := GetPort()
-
-	// log which port we're connected to
-	log.Println("Now server is running on port" + Port)
-
-	if err := router.Run(Port); err != nil {
-		log.Fatal(err)
-	}
 }
 
-// Initialises Database (PostgreSQL) connection.
+/**
+  * initialise Database (PostgreSQL) connection.
+  */
 func initDBConnection() *DB {
 	// will begin the connection process
 	db, err := Connect()
 
-	// in the event of any failure during the connection,
+	// in the event of any failure during the connection, throw the error
 	if err != nil {
 		log.Fatal("Error connecting to database: ", err)
 	}
@@ -88,25 +96,33 @@ func initDBConnection() *DB {
 	return db
 }
 
-func initGraphQLApi(db *DB, router *Router)  {
-	rootQry := graphql.ObjectConfig{
-		Name: "RootQuery",
-		Fields: gql.TutFields(db),
-	}
+/**
+  * initialise graphql api
+  */
+func initGraphQLApi(db *DB, router *Router) {
+	// first construct a root for our gql schema
+	rootQry := gql.InitRoot(db)
 
-	schemaConfig := graphql.SchemaConfig{
-		Query: graphql.NewObject(rootQry),
-	}
+	// construct the schema
+	schema, err := graphql.NewSchema(graphql.SchemaConfig{
+		Query: rootQry.Query,
+	})
 
-	schema, err := graphql.NewSchema(schemaConfig)
-
+	// throw the error if it fails
 	if err != nil {
 		log.Fatalf("Failed to create new schema, error: %v", err)
 	}
 
+	// curated list of gql query
 	r := gql.ExecuteQuery(`
 		{
 			tutorial(id: 1) {
+				title
+				comments {
+					body
+				}
+			}
+			list {
 				title
 				comments {
 					body
@@ -124,7 +140,9 @@ func initGraphQLApi(db *DB, router *Router)  {
 	}
 }
 
-
+/**
+  * func to fetch available port
+  */
 func GetPort() string {
 	var port = os.Getenv("PORT")
 	// Set a default port if there is nothing in the environment
