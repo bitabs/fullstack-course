@@ -20,8 +20,7 @@ var Mutation = graphql.NewObject(graphql.ObjectConfig{
 				tut := models.Tutorial{
 					Title: p.Args["title"].(string),
 				}
-				Add(tut)
-				return Tuts, nil
+				return tut, nil
 			},
 		},
 	},

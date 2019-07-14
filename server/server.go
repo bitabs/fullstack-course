@@ -2,8 +2,6 @@ package server
 
 import (
 	"encoding/json"
-	"fullstack-course/gql"
-	"github.com/go-chi/render"
 	"github.com/graphql-go/graphql"
 	"net/http"
 )
@@ -34,12 +32,12 @@ func (s *Server) GraphQL() http.HandlerFunc {
 		}
 
 		// Execute graphql query
-		result := gql.ExecuteQuery(rBody.Query, *s.GqlSchema)
+		//result := gql.ExecuteQuery(rBody.Query, *s.GqlSchema)
 
 		// render.JSON comes from the chi/render package and handles
 		// marshalling to json, automatically escaping HTML and setting
 		// the Content-Type as application/json.
-		render.JSON(w, r, result)
+		//render.JSON(w, r, result)
 
 	}
 }

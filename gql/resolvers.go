@@ -20,29 +20,14 @@ func (r *Resolver) UserResolver(p graphql.ResolveParams) (interface{}, error) {
 }
 
 func (r *Resolver) TutorialResolver(p graphql.ResolveParams) (interface{}, error) {
-	auth := &models.Author{
-		Name: "Naseebullah",
-		Tutorials: []int{1, 2},
-	}
+	tut := models.Tutorial{}
 
-	tut := models.Tutorial{
-		Title: "Golang",
-		Author: *auth,
-		Comments: []models.Comment{
-			{Body: "First Comment"},
-		},
-	}
+	// SELECT * FROM tutorial WHERE ID = p.Args["id"]
+	r.db.First(&tut, p.Args["id"].(int))
 
-	r.db.Create(&tut)
-	//r.db.AutoMigrate(&tut)
-	//r.db.Create(&models.Tutorial{
-	//	Title: "Testing",
-	//	Author: models.Author{
-	//		Name: "Naseebullah",
-	//		Tutorials: []int{1, 2},
-	//	},
-	//})
-	//r.db.First(&tut, p.Args["id"].(int))
+	// Create a relationship between tutorial and comments
+	r.db.Model(&tut).Related(&tut.Comments)
+
 	return tut, nil
 }
 

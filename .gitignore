@@ -81,3 +81,8 @@ dist
 
 # Service worker
 sw.*
+
+# Go configurations
+conf
+build
+

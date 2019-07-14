@@ -1,64 +1,130 @@
 package main
 
 import (
+	"flag"
 	. "fullstack-course/db"
+	"fullstack-course/gql"
 	"fullstack-course/models"
-	"github.com/joho/godotenv"
-	"github.com/go-chi/chi"
+	"github.com/gin-contrib/static"
+	"github.com/graphql-go/graphql"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 	"os"
 )
 
-func initAPI() ( *chi.Mux, *DB )  {
-	r := chi.NewRouter()
+type Router struct {
+	*gin.Engine
+}
 
-	if e := godotenv.Load(); e != nil {
-		log.Fatalf("Failed to load env file: %s", e)
+func main() {
+
+	boolPtr := flag.Bool("prod", false, "for production")
+
+	flag.Parse()
+
+	gin.SetMode(gin.ReleaseMode)
+
+	router := Router{gin.Default()}
+
+	// initialise database connection based on the configs
+	db := initDBConnection(*boolPtr)
+
+	// once we're finished with db. Request the db to close
+	defer func() {
+		if err := db.Close(); err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	// Two tables, tutorial & comment
+	tut, cmt := models.Tutorial{}, models.Comment{}
+
+	// dev purposes, drop the table if it exists
+	db.DropTableIfExists(&tut, &cmt)
+
+	// Create the table
+	db.CreateTable(&tut, &cmt)
+
+	// some mock data
+	data := models.Tutorial{
+		Title: "First Tut",
+		Comments: []models.Comment{
+			{Body: "First Comment"},
+			{Body: "Second Comment"},
+			{Body: "Third Comment"},
+		},
 	}
 
-	Host 		:= os.Getenv("Host")
-	Database 	:= os.Getenv("Database")
-	User		:= os.Getenv("User")
-	Port		:= os.Getenv("Port")
-	Password	:= os.Getenv("Password")
+	// Insert the data to psql
+	db.Create(&data)
 
-	db, err := Connect(ConnectionStr(Host, Port, User, Database, Password))
+	initGraphQLApi(db, &router)
+
+	router.Use(static.Serve("/", static.LocalFile("./build", true)))
+
+	// get a port
+	Port := GetPort()
+
+	// log which port we're connected to
+	log.Println("Now server is running on port" + Port)
+
+	if err := router.Run(Port); err != nil {
+		log.Fatal(err)
+	}
+}
+
+// Initialises Database (PostgreSQL) connection.
+func initDBConnection(isProd bool) *DB {
+	// will begin the connection process
+	db, err := Connect(isProd)
+
+	// in the event of any failure during the connection,
+	if err != nil {
+		log.Fatal("Error connecting to database: ", err)
+	}
+
+	// once connection is established, return the pointer to the database
+	return db
+}
+
+func initGraphQLApi(db *DB, router *Router)  {
+	rootQry := graphql.ObjectConfig{
+		Name: "RootQuery",
+		Fields: gql.TutFields(db),
+	}
+
+	schemaConfig := graphql.SchemaConfig{
+		Query: graphql.NewObject(rootQry),
+	}
+
+	schema, err := graphql.NewSchema(schemaConfig)
 
 	if err != nil {
-		log.Fatal( err)
+		log.Fatalf("Failed to create new schema, error: %v", err)
 	}
 
-	//db.AutoMigrate(&models.Author{}, &models.Comment{}, &models.Tutorial{})
+	r := gql.ExecuteQuery(`
+		{
+			tutorial(id: 1) {
+				title
+				comments {
+					body
+				}
+			}
+		}
+	`, schema)
 
-	//rootQuery := gql.NewRoot(db)
-	//
-	//sc, err := graphql.NewSchema(
-	//	graphql.SchemaConfig{Query: rootQuery.Query},
-	//)
-	//
-	//if err != nil {
-	//	fmt.Println("Error creating schema: ", err)
-	//}
-	//
-	//s := server.Server{
-	//	GqlSchema: &sc,
-	//}
-	//
-	//// Add some middleware to our router
-	//r.Use(
-	//	render.SetContentType(render.ContentTypeJSON), // set content-type headers as application/json
-	//	middleware.Logger,          // log api request calls
-	//	middleware.DefaultCompress, // compress results, mostly gzipping assets and json
-	//	middleware.StripSlashes,    // match paths with a trailing slash, strip it, and continue routing through the mux
-	//	middleware.Recoverer,       // recover from panics without crashing server
-	//)
-
-	r.Post("/graphql", nil)
-	//r.Post("/graphql", s.GraphQL())
-	return r, db
+	// Setup route group for the API
+	api := router.Group("/api")
+	{
+		api.GET("/", func(c *gin.Context) {
+			c.JSON(http.StatusOK, r)
+		})
+	}
 }
+
 
 func GetPort() string {
 	var port = os.Getenv("PORT")
@@ -69,80 +135,4 @@ func GetPort() string {
 	return ":" + port
 }
 
-func main() {
-	// get a port
-	Port := GetPort()
 
-	_, db := initAPI()
-
-	defer func() {
-		if err := db.Close(); err != nil {
-			log.Fatal(err)
-		}
-	}()
-
-	//db.AutoMigrate(&models.Tutorial{})
-
-	//db.Create(&models.Tutorial{
-	//	Title: "My First Tut",
-	//	Comments: []string{
-	//		"Hello World",
-	//	},
-	//})
-
-	//db.Model(&models.Tutorial{}).Related(&models.Comment{})
-
-
-	//db.CreateTable(&models.Tutorial{})
-
-	//rootQuery := graphql.ObjectConfig{
-	//	Name: "RootQuery",
-	//	Fields: gql.TutFields(db),
-	//}
-	//
-	//schemaConfig := graphql.SchemaConfig{
-	//	Query: graphql.NewObject(rootQuery),
-	//}
-	//
-	//schema, err := graphql.NewSchema(schemaConfig)
-	//
-	//if err != nil {
-	//	log.Fatalf("Failed to create new schema, error: %v", err)
-	//}
-	//
-	//query := `
-	//	{
-	//		tutorial(id: 1) {
-	//			title,
-	//			author
-	//		}
-	//	}
-	//`
-	//
-	//params := graphql.Params{
-	//	Schema: schema,
-	//	RequestString: query,
-	//}
-	//
-	//r := graphql.Do(params)
-	//
-	//if len(r.Errors) > 0 {
-	//	log.Fatalf("failed to execute graphql operation, errors: %+v", r.Errors)
-	//}
-	//
-	//rJSON, _ := json.Marshal(r)
-	//
-	//fmt.Printf("%s \n: ", rJSON)
-
-
-	// serve static Frontend React pages
-	http.Handle("/", http.FileServer(http.Dir("./build")))
-
-	// log which port we're connected to
-	log.Println("Now server is running on port" + Port)
-
-	// serve our BE to the port, and log any error if it fails to connect to port
-	if err := http.ListenAndServe("127.0.0.1" + Port, nil); err != nil {
-		log.Fatal(err)
-	}
-}

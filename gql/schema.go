@@ -5,7 +5,7 @@ import (
 	"github.com/graphql-go/graphql"
 )
 
-func TutFields(db *db.DB) graphql.Fields{
+func TutFields(db *db.DB) graphql.Fields {
 	resolver := Resolver{db: db}
 
 	return graphql.Fields{
