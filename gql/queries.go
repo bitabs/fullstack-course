@@ -11,12 +11,10 @@ type Root struct {
 
 func InitRoot(db *db.DB) *Root {
 	root := Root{
-		Query: NewObject(
-			ObjectConfig{
-				Name: "Query",
-				Fields: TutFields(db),
-			},
-		),
+		Query: NewObject(ObjectConfig{
+			Name: "Query",
+			Fields: TutFields(db),
+		}),
 	}
 
 	return &root

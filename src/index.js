@@ -1,11 +1,14 @@
 import React from 'react'
 import { render } from 'react-dom'
-import ApolloClient from "apollo-boost"
-import { ApolloProvider } from "react-apollo"
 import App from './components/app'
 import './index.css'
+import {ApolloProvider} from "react-apollo";
+import ApolloClient from "apollo-boost";
 
-const client = new ApolloClient()
+const client = new ApolloClient({
+  uri: 'http://localhost:3000/graphql'
+});
+
 
 const Application = () => (
   <ApolloProvider client={client}>
@@ -14,14 +17,6 @@ const Application = () => (
 )
 
 render(<Application />, document.getElementById('root'))
-
-// render(
-//   // we pass the redux store to the entire app
-//   <Provider store={store}>
-//     <App/>
-//   </Provider>,
-//   document.getElementById('root')
-// );
 
 // if in development environment, allow hot reload for debugging purposes
 if (process.env.NODE_ENV === 'development') {

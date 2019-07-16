@@ -6,10 +6,10 @@ import (
 	"fullstack-course/models"
 	"github.com/gin-contrib/static"
 	"github.com/graphql-go/graphql"
+	"github.com/graphql-go/handler"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/gin-gonic/gin"
 	"log"
-	"net/http"
 	"os"
 )
 
@@ -100,7 +100,7 @@ func initDBConnection() *DB {
   * initialise graphql api
   */
 func initGraphQLApi(db *DB, router *Router) {
-	// first construct a root for our gql schema
+	//first construct a root for our gql schema
 	rootQry := gql.InitRoot(db)
 
 	// construct the schema
@@ -108,35 +108,58 @@ func initGraphQLApi(db *DB, router *Router) {
 		Query: rootQry.Query,
 	})
 
-	// throw the error if it fails
+	//throw the error if it fails
 	if err != nil {
 		log.Fatalf("Failed to create new schema, error: %v", err)
 	}
 
 	// curated list of gql query
-	r := gql.ExecuteQuery(`
-		{
-			tutorial(id: 1) {
-				title
-				comments {
-					body
-				}
-			}
-			list {
-				title
-				comments {
-					body
-				}
-			}
-		}
-	`, schema)
+	//r := gql.ExecuteQuery(`
+	//	{
+	//		tutorial(id: 1) {
+	//			title
+	//			comments {
+	//				body
+	//			}
+	//		}
+	//		list {
+	//			title
+	//			comments {
+	//				body
+	//			}
+	//		}
+	//	}
+	//`, schema)
 
-	// Setup route group for the API
-	api := router.Group("/api")
+
+	//g := router.Group("/graphql")
+	//{
+	//	g.GET("/", Handler(schema))
+	//}
+
+	//// Setup route group for the API
+	api := router.Group("/graphql")
 	{
-		api.GET("/", func(c *gin.Context) {
-			c.JSON(http.StatusOK, r)
-		})
+		api.POST("/", Handler(schema))
+
+		//api.GET("/", func(c *gin.Context) {
+		//	c.JSON(http.StatusOK, r)
+		//})
+	}
+}
+
+// Handler initializes the prometheus middleware.
+func Handler(s graphql.Schema) gin.HandlerFunc {
+
+	// Creates a GraphQL-go HTTP handler with the defined schema
+	h := handler.New(&handler.Config{
+		Schema: &s,
+		Pretty: true,
+		Playground: true,
+	})
+
+	return func(c *gin.Context) {
+		h.ServeHTTP(c.Writer, c.Request)
 	}
 }
 
