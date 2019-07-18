@@ -7,7 +7,7 @@ import (
 )
 
 type Resolver struct {
-	db                *db.DB
+	db	*db.DB
 }
 
 func (r *Resolver) TutorialResolver(p graphql.ResolveParams) (interface{}, error) {

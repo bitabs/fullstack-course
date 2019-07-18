@@ -3,12 +3,12 @@ package main
 import (
 	. "fullstack-course/db"
 	"fullstack-course/gql"
-	"fullstack-course/models"
+	"fullstack-course/mock"
 	"github.com/gin-contrib/static"
+	"github.com/gin-gonic/gin"
 	"github.com/graphql-go/graphql"
 	"github.com/graphql-go/handler"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"github.com/gin-gonic/gin"
 	"log"
 	"os"
 )
@@ -18,8 +18,16 @@ type Router struct {
 }
 
 func main() {
-	// initialise database connection based on the configs
-	db := initDBConnection()
+	// declare a variable for our GORM DB model
+	database, router := DB{}, Router{gin.Default()}
+
+	// initiate database connection
+	db, err := database.Connect()
+
+	// in the event of any failure during the connection, throw the error
+	if err != nil {
+		log.Fatal("Error connecting to database: ", err)
+	}
 
 	// once we're finished with db. Request the db to close
 	defer func() {
@@ -28,17 +36,18 @@ func main() {
 		}
 	}()
 
-	// we'll use gin for routing
-	router := Router{gin.Default()}
+	/**
+	  * An entry point to initialise database model. i.e,
+	  * construct. Note only modify database model at this stage
+	 **/
+	m := mock.Mock{ DB: db }
+	m.InitModel()
 
-	// initialise Database model, i.e. tables
-	initDbModel(db)
+	// serve our react frontend
+	router.Use(static.Serve("/", static.LocalFile("./build", true)))
 
 	// initialise graphql api
-	initGraphQLApi(db, &router)
-
-	// serve static frontend pages
-	router.Use(static.Serve("/", static.LocalFile("./build", true)))
+	router.initGraphQLApi(db)
 
 	// get a port
 	Port := GetPort()
@@ -53,53 +62,9 @@ func main() {
 }
 
 /**
-  * func to initialise database model, i.e. create tables
-  * within the database.
-  */
-func initDbModel(db *DB) {
-	// Two (structs) tables, tutorial & comment
-	tut, cmt := models.Tutorial{}, models.Comment{}
-
-	// dev related, drop the table if it exists
-	db.DropTableIfExists(&tut, &cmt)
-
-	// Create the table
-	db.CreateTable(&tut, &cmt)
-
-	// some mock data
-	data := models.Tutorial{
-		Title: "First Tut",
-		Comments: []models.Comment{
-			{Body: "First Comment"},
-			{Body: "Second Comment"},
-			{Body: "Third Comment"},
-		},
-	}
-
-	// Insert the data to psql
-	db.Create(&data)
-}
-
-/**
-  * initialise Database (PostgreSQL) connection.
-  */
-func initDBConnection() *DB {
-	// will begin the connection process
-	db, err := Connect()
-
-	// in the event of any failure during the connection, throw the error
-	if err != nil {
-		log.Fatal("Error connecting to database: ", err)
-	}
-
-	// once connection is established, return the pointer to the database
-	return db
-}
-
-/**
   * initialise graphql api
   */
-func initGraphQLApi(db *DB, router *Router) {
+func (r *Router) initGraphQLApi(db *DB) {
 	//first construct a root for our gql schema
 	rootQry := gql.InitRoot(db)
 
@@ -113,53 +78,17 @@ func initGraphQLApi(db *DB, router *Router) {
 		log.Fatalf("Failed to create new schema, error: %v", err)
 	}
 
-	// curated list of gql query
-	//r := gql.ExecuteQuery(`
-	//	{
-	//		tutorial(id: 1) {
-	//			title
-	//			comments {
-	//				body
-	//			}
-	//		}
-	//		list {
-	//			title
-	//			comments {
-	//				body
-	//			}
-	//		}
-	//	}
-	//`, schema)
-
-
-	//g := router.Group("/graphql")
-	//{
-	//	g.GET("/", Handler(schema))
-	//}
-
-	//// Setup route group for the API
-	api := router.Group("/graphql")
-	{
-		api.POST("/", Handler(schema))
-
-		//api.GET("/", func(c *gin.Context) {
-		//	c.JSON(http.StatusOK, r)
-		//})
-	}
-}
-
-// Handler initializes the prometheus middleware.
-func Handler(s graphql.Schema) gin.HandlerFunc {
-
-	// Creates a GraphQL-go HTTP handler with the defined schema
 	h := handler.New(&handler.Config{
-		Schema: &s,
+		Schema: &schema,
 		Pretty: true,
 		Playground: true,
 	})
 
-	return func(c *gin.Context) {
-		h.ServeHTTP(c.Writer, c.Request)
+	r.Group("/graphql")
+	{
+		r.Use(func(c *gin.Context) {
+			h.ServeHTTP(c.Writer, c.Request)
+		})
 	}
 }
 

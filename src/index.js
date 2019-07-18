@@ -3,12 +3,22 @@ import { render } from 'react-dom'
 import App from './components/app'
 import './index.css'
 import {ApolloProvider} from "react-apollo";
-import ApolloClient from "apollo-boost";
+import ApolloClient, { gql } from "apollo-boost";
 
-const client = new ApolloClient({
-  uri: 'http://localhost:3000/graphql'
-});
+const client = new ApolloClient();
 
+client.query({
+  query: gql`
+    {
+      tutorial(id: 1) {
+        title
+        comments {
+          body
+        }
+      }
+    }
+  `
+}).then(e => console.log(e))
 
 const Application = () => (
   <ApolloProvider client={client}>
