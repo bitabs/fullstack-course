@@ -65,12 +65,15 @@ func main() {
   * initialise graphql api
   */
 func (r *Router) initGraphQLApi(db *DB) {
-	//first construct a root for our gql schema
-	rootQry := gql.InitRoot(db)
 
-	// construct the schema
+	// extract queries
+	rootQuery := gql.Query(db).Query
+	rootMutation := gql.Mutation(db)
+
+	// our initial single-schema. Queries will hold all of our queries
 	schema, err := graphql.NewSchema(graphql.SchemaConfig{
-		Query: rootQry.Query,
+		Query: rootQuery,
+		Mutation: rootMutation,
 	})
 
 	//throw the error if it fails
@@ -78,14 +81,47 @@ func (r *Router) initGraphQLApi(db *DB) {
 		log.Fatalf("Failed to create new schema, error: %v", err)
 	}
 
+	/**
+		GraphQL handler which accepts our schema.
+		For dev purposes, we will turn playground on to play with graphql
+		queries directly from browser.
+		=================================================================
+		============================ Examples ===========================
+	    =================================================================
+
+		Queries:
+		=======================
+		Fetch tut with id = 2
+		=======================
+		{
+	  		tutorial(id: 2) {
+	    		title,
+	    		comments {
+	      			body
+	    		}
+	  		}
+		}
+
+		Mutation:
+		=======================
+		Create tut with title = 'Third Tut'
+		=======================
+		mutation M {
+	  		newTut: createTutorial(title: "Second Tutorial") {
+	    		title
+	  		}
+		}
+	 */
 	h := handler.New(&handler.Config{
 		Schema: &schema,
 		Pretty: true,
 		Playground: true,
 	})
 
+	// let us expose the graphql playground under /graphql endpoint
 	r.Group("/graphql")
 	{
+		// middleware
 		r.Use(func(c *gin.Context) {
 			h.ServeHTTP(c.Writer, c.Request)
 		})

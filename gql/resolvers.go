@@ -10,7 +10,7 @@ type Resolver struct {
 	db	*db.DB
 }
 
-func (r *Resolver) TutorialResolver(p graphql.ResolveParams) (interface{}, error) {
+func (r *Resolver) getTutorial(p graphql.ResolveParams) (interface{}, error) {
 	tut := models.Tutorial{}
 
 	// SELECT * FROM tutorial WHERE ID = p.Args["id"]
@@ -22,7 +22,7 @@ func (r *Resolver) TutorialResolver(p graphql.ResolveParams) (interface{}, error
 	return tut, nil
 }
 
-func (r *Resolver) TutorialsResolver(p graphql.ResolveParams) (interface{}, error) {
+func (r *Resolver) getAllTutorials(p graphql.ResolveParams) (interface{}, error) {
 	var tuts []models.Tutorial
 
 	r.db.Find(&tuts)
@@ -30,6 +30,16 @@ func (r *Resolver) TutorialsResolver(p graphql.ResolveParams) (interface{}, erro
 	for i := range tuts {
 		r.db.Model(&tuts[i]).Related(&tuts[i].Comments)
 	}
+
+	return tuts, nil
+}
+
+func (r *Resolver) createTutorial(p graphql.ResolveParams) (interface{}, error) {
+	tuts := models.Tutorial{
+		Title: p.Args["title"].(string),
+	}
+
+	r.db.Create(&tuts)
 
 	return tuts, nil
 }
