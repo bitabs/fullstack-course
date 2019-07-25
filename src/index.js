@@ -5,20 +5,10 @@ import './index.css'
 import {ApolloProvider} from "react-apollo";
 import ApolloClient, { gql } from "apollo-boost";
 
-const client = new ApolloClient();
+const client = new ApolloClient({
+  uri: 'http://localhost:3000'
+});
 
-client.query({
-  query: gql`
-    {
-      tutorial(id: 1) {
-        title
-        comments {
-          body
-        }
-      }
-    }
-  `
-}).then(e => console.log(e))
 
 const Application = () => (
   <ApolloProvider client={client}>

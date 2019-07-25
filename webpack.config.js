@@ -41,7 +41,8 @@ module.exports = ({ mode } = { mode: "production" }) => {
     resolve: {
       extensions: ["*", ".js", ".jsx"],
       alias: {
-        components: path.resolve(__dirname, "./src/components")
+        components: path.resolve(__dirname, "./src/components"),
+        gql: path.resolve(__dirname, "./src/graphql")
       }
     },
     devServer: {

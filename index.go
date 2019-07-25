@@ -5,6 +5,7 @@ import (
 	"fullstack-course/gql"
 	"fullstack-course/mock"
 	"github.com/gin-contrib/static"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/graphql-go/graphql"
 	"github.com/graphql-go/handler"
@@ -117,6 +118,11 @@ func (r *Router) initGraphQLApi(db *DB) {
 		Pretty: true,
 		Playground: true,
 	})
+
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"http://localhost:8080"}
+
+	r.Use(cors.New(config))
 
 	// let us expose the graphql playground under /graphql endpoint
 	r.Group("/graphql")
