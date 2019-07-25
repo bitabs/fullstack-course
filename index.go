@@ -1,11 +1,12 @@
 package main
 
 import (
+	"flag"
 	. "fullstack-course/db"
 	"fullstack-course/gql"
 	"fullstack-course/mock"
-	"github.com/gin-contrib/static"
 	"github.com/gin-contrib/cors"
+	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 	"github.com/graphql-go/graphql"
 	"github.com/graphql-go/handler"
@@ -14,13 +15,18 @@ import (
 	"os"
 )
 
-type Router struct {
-	*gin.Engine
-}
+type Router struct { *gin.Engine }
+
+type Env struct { env string }
 
 func main() {
+	env := flag.String("env", "dev", "application environment")
+	flag.Parse()
+
+	e := Env{env: *env}
+
 	// declare a variable for our GORM DB model
-	database, router := DB{}, Router{gin.Default()}
+	database, router := DB{}, Router{gin.Default() }
 
 	// initiate database connection
 	db, err := database.Connect()
@@ -38,17 +44,19 @@ func main() {
 	}()
 
 	/**
-	  * An entry point to initialise database model. i.e,
-	  * construct. Note only modify database model at this stage
-	 **/
-	m := mock.Mock{ DB: db }
+	 * An entry point to initialise database model. i.e,
+	 * construct. Note only modify database model at this stage
+	**/
+	m := mock.Mock{DB: db}
 	m.InitModel()
 
 	// serve our react frontend
-	router.Use(static.Serve("/", static.LocalFile("./build", true)))
+	if *env == "prod" {
+		router.Use(static.Serve("/", static.LocalFile("./build", true)))
+	}
 
 	// initialise graphql api
-	router.initGraphQLApi(db)
+	router.initGraphQLApi(db, &e)
 
 	// get a port
 	Port := GetPort()
@@ -65,7 +73,7 @@ func main() {
 /**
   * initialise graphql api
   */
-func (r *Router) initGraphQLApi(db *DB) {
+func (r *Router) initGraphQLApi(db *DB, e *Env) {
 
 	// extract queries
 	rootQuery := gql.Query(db).Query
@@ -119,10 +127,11 @@ func (r *Router) initGraphQLApi(db *DB) {
 		Playground: true,
 	})
 
-	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"http://localhost:8080"}
-
-	r.Use(cors.New(config))
+	if e.env == "dev" {
+		config := cors.DefaultConfig()
+		config.AllowAllOrigins = true
+		r.Use(cors.New(config))
+	}
 
 	// let us expose the graphql playground under /graphql endpoint
 	r.Group("/graphql")

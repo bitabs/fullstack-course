@@ -4,9 +4,12 @@
   "description": "",
   "main": "",
   "scripts": {
-    "dev": "rm -rf build/ && webpack-dev-server --env.mode development --hot",
-    "start": "yarn run build && go build -o index && ./index",
-    "build": "rm -rf build/ && webpack --env.mode production"
+    "clean": "rm -rf build/",
+    "server": "go build -o index && ./index",
+    "client-dev": "webpack-dev-server --env.mode development --hot",
+    "client-prod": "webpack --env.mode production",
+    "dev": "concurrently \"yarn run clean\" \"yarn run server -env=dev\" \"yarn run client-dev\"",
+    "start": "yarn run clean && yarn run client-prod && yarn run server -env=prod"
   },
   "engines": {
     "node": "10.x",
@@ -36,6 +39,7 @@
     "babel-plugin-styled-components": "^1.10.0",
     "brotli-webpack-plugin": "^1.1.0",
     "clean-webpack-plugin": "^2.0.1",
+    "concurrently": "^4.1.1",
     "copy-webpack-plugin": "^5.0.3",
     "css-loader": "^2.1.1",
     "express": "^4.17.1",
