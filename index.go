@@ -50,6 +50,8 @@ func main() {
 	m := mock.Mock{DB: db}
 	m.InitModel()
 
+	println("Testing here", *env)
+
 	// serve our react frontend
 	if *env == "prod" {
 		router.Use(static.Serve("/", static.LocalFile("./build", true)))
