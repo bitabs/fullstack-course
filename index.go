@@ -54,8 +54,10 @@ func main() {
 
 	// serve our react frontend
 	if *env == "prod" {
-		router.Use(static.Serve("/", static.LocalFile("./build", true)))
+		println("inside prod")
 	}
+
+	router.Use(static.Serve("/", static.LocalFile("./build", true)))
 
 	// initialise graphql api
 	router.initGraphQLApi(db, &e)
