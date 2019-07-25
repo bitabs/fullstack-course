@@ -20,7 +20,7 @@ type Router struct { *gin.Engine }
 type Env struct { env string }
 
 func main() {
-	env := flag.String("env", "dev", "application environment")
+	env := flag.String("env", "prod", "application environment")
 	flag.Parse()
 
 	e := Env{env: *env}
@@ -128,6 +128,8 @@ func (r *Router) initGraphQLApi(db *DB, e *Env) {
 		Pretty: true,
 		Playground: true,
 	})
+
+	println("here", e.env)
 
 	if e.env == "dev" {
 		config := cors.DefaultConfig()
