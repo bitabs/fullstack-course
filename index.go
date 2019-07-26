@@ -126,7 +126,7 @@ func (r *Router) initGraphQLApi(db *DB, e *Env) {
 	h := handler.New(&handler.Config{
 		Schema: &schema,
 		Pretty: true,
-		Playground: false,
+		Playground: true,
 	})
 
 	println("here", e.env)
