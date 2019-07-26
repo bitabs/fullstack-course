@@ -5,13 +5,9 @@ import './index.css'
 import {ApolloProvider} from "react-apollo";
 import ApolloClient, { gql } from "apollo-boost";
 
-// const client = process.env.NODE_ENV === 'development'
-//   ? new ApolloClient({ uri: "http://localhost:3000" })
-//   : new ApolloClient()
-
-const client = new ApolloClient()
-
-console.log(process.env.NODE_ENV);
+const client = process.env.NODE_ENV === 'development'
+  ? new ApolloClient({ uri: "http://localhost:3000" })
+  : new ApolloClient()
 
 
 const Application = () => (
