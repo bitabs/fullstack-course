@@ -9,7 +9,8 @@
     "client-dev": "webpack-dev-server --env.mode development --hot",
     "client-prod": "webpack --env.mode production",
     "dev": "concurrently \"yarn run clean\" \"yarn run server -env=dev\" \"yarn run client-dev\"",
-    "build": "rm -rf build/ && webpack --env.mode production"
+    "prod": "yarn run clean && yarn run client-prod && yarn run server",
+    "build": "yarn run clean && client-prod"
   },
   "engines": {
     "node": "10.x",
