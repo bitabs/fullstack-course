@@ -1,0 +1,28 @@
+import { gql } from "apollo-boost"
+
+export const REGISTER_USER = gql`
+  mutation Register (
+    $firstName    : String!, 
+    $lastName     : String!, 
+    $emailAddress : String!, 
+    $phoneNumber  : String!, 
+    $userName     : String!, 
+    $password     : String!
+  ) {
+    registerUser (
+      firstName     : $firstName, 
+      lastName      : $lastName, 
+      emailAddress  : $emailAddress, 
+      phoneNumber   : $phoneNumber, 
+      username      : $userName, 
+      password      : $password
+    ) {
+      firstName
+      lastName
+      emailAddress
+      phoneNumber
+      username
+      password
+    }
+  }
+`;

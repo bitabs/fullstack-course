@@ -30,3 +30,32 @@ var Tutorial = NewObject(ObjectConfig{
 		},
 	},
 })
+
+// declare Tutorial blueprint
+var User = NewObject(ObjectConfig{
+	Name: "User",
+	Fields: Fields{
+		// each tutorial will have the following fields
+		"id": &Field{
+			Type: Int,
+		},
+		"firstName": &Field{
+			Type: String,
+		},
+		"lastName": &Field{
+			Type: String,
+		},
+		"emailAddress": &Field{
+			Type: String,
+		},
+		"phoneNumber": &Field{
+			Type: String,
+		},
+		"username": &Field{
+			Type: String,
+		},
+		"password": &Field{
+			Type: String,
+		},
+	},
+})

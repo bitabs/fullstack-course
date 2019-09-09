@@ -1,4 +1,5 @@
 import React from 'react'
+import { BrowserRouter } from "react-router-dom"
 import { render } from 'react-dom'
 import App from './components/app'
 import './index.css'
@@ -11,9 +12,11 @@ const client = process.env.NODE_ENV === 'development'
 
 
 const Application = () => (
-  <ApolloProvider client={client}>
-    <App />
-  </ApolloProvider>
+  <BrowserRouter>
+    <ApolloProvider client={client}>
+      <App />
+    </ApolloProvider>
+  </BrowserRouter>
 )
 
 render(<Application />, document.getElementById('root'))

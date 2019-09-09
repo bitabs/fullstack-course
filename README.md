@@ -23,3 +23,31 @@ What will you learn in the process:
 > Still under initial development. Coming out soon.
 
 ##### If you have a particular web application in mind that I'd like to build, please raise it an issue.
+
+
+## Backend [Go]
+
+###GraphQL
+#### Query
+		Queries:
+		=======================
+		Fetch tut with id = 2
+		=======================
+		{
+	  		tutorial(id: 2) {
+	    		title,
+	    		comments {
+	      			body
+	    		}
+	  		}
+		}
+		
+		Mutation:
+		=======================
+		Create tut with title = 'Third Tut'
+		=======================
+		mutation M {
+	  		newTut: createTutorial(title: "Second Tutorial") {
+	    		title
+	  		}
+		}

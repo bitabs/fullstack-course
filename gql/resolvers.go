@@ -57,3 +57,19 @@ func (r *Resolver) createTutorial(p graphql.ResolveParams) (interface{}, error) 
 
 	return tuts, nil
 }
+
+func (r *Resolver) registerUser(p graphql.ResolveParams) (interface{}, error) {
+
+	usr := models.User{
+		FirstName	 : p.Args["firstName"].(string),
+		LastName     : p.Args["lastName"].(string),
+		EmailAddress : p.Args["emailAddress"].(string),
+		PhoneNumber	 : p.Args["phoneNumber"].(string),
+		Username	 : p.Args["username"].(string),
+		Password	 : p.Args["password"].(string),
+	}
+
+	r.db.Create(&usr)
+
+	return usr, nil
+}

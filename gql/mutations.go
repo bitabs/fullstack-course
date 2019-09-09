@@ -23,6 +23,7 @@ func Mutation(db *db.DB) *Object {
 		Fields: Fields{
 			// [0..*] of mutations
 			"createTutorial": res.createTutorial(),
+			"registerUser": res.registerUser(),
 		},
 	})
 
@@ -31,11 +32,41 @@ func Mutation(db *db.DB) *Object {
 	return root
 }
 
+func (mr *MutationResolver) registerUser() *Field{
+	field := &Field{
+		Type: User,
+		Description: "Register new user",
+		Args: FieldConfigArgument{
+			"firstName": &ArgumentConfig{
+				Type: String,
+			},
+			"lastName": &ArgumentConfig{
+				Type: String,
+			},
+			"emailAddress": &ArgumentConfig{
+				Type: String,
+			},
+			"phoneNumber": &ArgumentConfig{
+				Type: String,
+			},
+			"username": &ArgumentConfig{
+				Type: String,
+			},
+			"password": &ArgumentConfig{
+				Type: String,
+			},
+		},
+		Resolve: mr.R.registerUser,
+	}
+
+	return field
+}
+
 /**
 mutation func that creates a tut.
 @Args: Title
 **/
-func (mr * MutationResolver) createTutorial() *Field {
+func (mr *MutationResolver) createTutorial() *Field {
 	field := &Field{
 		Type:        Tutorial,
 		Description: "Create new tutorial",
