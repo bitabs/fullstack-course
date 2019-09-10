@@ -17,7 +17,8 @@ type Server struct {
 
 // serve our react frontend
 func (s Server) serveFrontend() {
-	if s.Environment == "prod" {
+	println("======== S environemnt", s.Environment)
+	if s.Environment == "" {
 		gin.SetMode(gin.ReleaseMode)
 		s.Router.Use(static.Serve("/", static.LocalFile("./build", true)))
 	}
