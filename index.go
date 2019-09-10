@@ -18,6 +18,8 @@ func init()  {
 		db, err  = database.Connect()
 	)
 
+	gin.SetMode(gin.ReleaseMode)
+
 	flag.Parse()
 
 	if err != nil {

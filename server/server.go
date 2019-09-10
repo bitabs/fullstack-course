@@ -39,10 +39,10 @@ func (s *Server) Server() {
 
 	s.initAPI()
 
-	s.serveFrontend()
 
 	s.serve()
 
+	s.serveFrontend()
 }
 
 func (s *Server) initAPI() {
