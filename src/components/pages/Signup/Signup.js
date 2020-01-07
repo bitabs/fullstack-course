@@ -1,5 +1,7 @@
 import React, { PureComponent } from 'react'
 import Input from "components/molecules/Input"
+import { REGISTER_USER } from "../../../graphql/mutations";
+import Mutation from "react-apollo/Mutation";
 
 class Signup extends PureComponent {
   constructor(props) {
@@ -59,7 +61,6 @@ class Signup extends PureComponent {
   }
 
   handleUserInput = (props, field) => {
-    console.log(props, field)
     props.preventDefault()
     const { value } = props.target
     this.setState(prevState => ({
@@ -75,32 +76,52 @@ class Signup extends PureComponent {
 
   handleSubmit = (e) => {
     e.preventDefault()
-    console.log("submit")
+
   }
 
 
   render() {
     const { handleSubmit } = this
-    return (
-      <div className="signup">
-        <h1>Signup Form</h1>
-        <form onSubmit={handleSubmit}>
-          {Object.values(this.state.form).map((field, i) => {
-            const { type } = field
 
-            if (type === "input") {
-              return <Input
-                key={i}
-                id={field.name}
-                name={field.name}
-                title={field.title}
-                handleChange={field.handleChange}
-              />
-            }
-          })}
-          <input type="submit" value="Submit" />
-        </form>
-      </div>
+    return (
+      <Mutation mutation={REGISTER_USER}>
+        {(registerUser, { data }) => {
+          if (data)
+            console.log(data);
+
+          return (
+            <div className="signup">
+              <h1>Signup Form</h1>
+              <form onSubmit={e => {
+                e.preventDefault()
+                registerUser({variables: {
+                    firstName: "Haseebullah",
+                    lastName: "Ahmadi",
+                    emailAddress: "ezatsafi@hotmail.com",
+                    phoneNumber: "024332423",
+                    username: "jksdjhfds",
+                    password: "dfsfsdf"
+                  }})
+              }}>
+                {Object.values(this.state.form).map((field, i) => {
+                  const { type } = field
+
+                  if (type === "input") {
+                    return <Input
+                      key={i}
+                      id={field.name}
+                      name={field.name}
+                      title={field.title}
+                      handleChange={field.handleChange}
+                    />
+                  }
+                })}
+                <input type="submit" value="Submit" />
+              </form>
+            </div>
+          )
+        }}
+      </Mutation>
     );
   }
 }

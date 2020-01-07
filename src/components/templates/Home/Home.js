@@ -5,7 +5,7 @@ import ExchangeRates from "./ExchangeRates";
 
 const Home = ({children, ...props}) => (
   <Wrapper>
-    <H1>Hello, world</H1>
+    <H1>Hello, world!</H1>
     {/*<ExchangeRates/>*/}
   </Wrapper>
 );

@@ -38,7 +38,6 @@ func (s *Server) Server() {
 
 	s.initAPI()
 
-
 	s.serve()
 
 }

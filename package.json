@@ -28,6 +28,7 @@
   },
   "homepage": "https://github.com/NaseebullahSafi/fullstack-course#readme",
   "dependencies": {
+    "@apollo/react-hooks": "^3.1.0",
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.4.0",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
